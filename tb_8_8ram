@@ -1,0 +1,76 @@
+`timescale 1ns/1ps
+
+
+module tb_8_8ram;
+reg clk,rst,wr_enb;
+    reg [2:0]wr_addr;
+    reg [7:0]din;
+    reg rd_enb;
+    reg [2:0] rd_addr;
+    wire [7:0] dataout;
+
+    RAM8_8 uut(
+        .clk(clk),
+        .rst(rst),
+        .wr_enb(wr_enb),
+        .wr_addr(wr_addr),
+        .din(din),
+        .rd_enb(rd_enb),
+        .rd_addr(rd_addr),
+        .dataout(dataout)
+    );
+    initial clk = 0;
+
+    always #5 clk = ~clk;
+
+    initial begin
+
+        $dumpfile("waves.vcd");
+        $dumpvars(0,tb_8_8ram);
+
+        $monitor("Time=%0t | clk=%b | rst=%b | wr_enb=%b | wr_addr=%b | din=%b | rd_enb=%b | rd_addr=%b | dataout=%b",
+         $time, clk, rst, wr_enb, wr_addr, din, rd_enb, rd_addr, dataout);
+
+
+  rst = 1;
+wr_enb = 0;
+rd_enb = 0;
+wr_addr = 0;
+rd_addr = 0;
+din = 0;
+ 
+
+
+        rst = 1;
+        #10 
+        rst =0;
+
+        wr_enb = 1;
+        wr_addr = 3'b101;
+
+        din = 5;
+
+        #10;
+
+        wr_enb = 1;
+        wr_addr = 3'b100;
+        din = 10;
+
+        #10;
+
+       wr_enb = 0;
+rd_enb = 1;
+
+rd_addr = 3'b101;
+#10;
+
+rd_addr = 3'b100;
+#10;
+
+rd_enb = 0;
+
+        $finish;
+
+    end
+
+    endmodule
